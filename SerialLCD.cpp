@@ -69,7 +69,7 @@ unsigned char SerialLCD::mapChar(
     result |=  rs ? _BIT(LCD_RS_REGISTER) : 0;
     result |=  rw ? _BIT(LCD_RW_REGISTER) : 0;
     result |=  en ? _BIT(LCD_EN_REGISTER) : 0;
-    result |=  this->backlight ? _BIT(LCD_BACKLIGHT ) : 0;
+    result |=  this->backlight ? _BIT(LCD_BACKLIGHT_REGISTER ) : 0;
 
     cmd = 0x0f & (cmd >> (msb ? 4 : 0));
 
@@ -116,6 +116,17 @@ void SerialLCD::moveCursorLeft (){
                      LCD_CURSOR_MOVE |
                      LCD_SHIFT_LEFT
                      ,
+                     false,
+                     false
+                    );
+}
+
+void SerialLCD::moveCursor(bool bottomLine, unsigned char position)
+{
+    this->addCommand(
+                     LCD_SET_DD_RAM_ADDRESS  |
+                     (bottomLine ? 0x40 : 0) |
+                     position,
                      false,
                      false
                     );
