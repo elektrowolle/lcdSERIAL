@@ -128,11 +128,11 @@
 #ifndef LCD_ENABLE
 #define LCD_ENABLE               0x04
 #endif
-#ifndef SET_CG_RAM_ADDRESS
-#define SET_CG_RAM_ADDRESS       0x40
+#ifndef LCD_SET_CG_RAM_ADDRESS
+#define LCD_SET_CG_RAM_ADDRESS   0x40
 #endif
-#ifndef SET_DD_RAM_ADDRESS
-#define SET_DD_RAM_ADDRESS       0x80
+#ifndef LCD_SET_DD_RAM_ADDRESS
+#define LCD_SET_DD_RAM_ADDRESS   0x80
 #endif
 
 #ifndef _BIT
@@ -147,157 +147,157 @@
  */
 class SerialLCD
 {
-    //char data;
+  //char data;
 
-    bool backlight;
-    unsigned char * queue;
-    unsigned char queueCursor;
-    bool isDRAM;
-    unsigned char queueLength;
-    unsigned char queueSize;
+  bool backlight;
+  unsigned char * queue;
+  unsigned char queueCursor;
+  bool isDRAM;
+  unsigned char queueLength;
+  unsigned char queueSize;
 
 public:
-    /**
-     * @brief Constructor
-     * @details Initialises SerialLCD
-     *
-     * @param twoLines
-     * set True if the lcd shall run in two line mode. Default state is true.
-     *
-     * @param sndFontSet
-     * if true, the second Fontset will be selected.
-     *
-     * @param _queueSize
-     * Set with care! The queuesize can be changed to either save space or
-     * increase possible performance.
-     */
-    SerialLCD(         bool twoLines   = true,
-                       bool sndFontSet = true,
-              unsigned char _queueSize = 32
-             );
+  /**
+   * @brief Constructor
+   * @details Initialises SerialLCD
+   *
+   * @param twoLines
+   * set True if the lcd shall run in two line mode. Default state is true.
+   *
+   * @param sndFontSet
+   * if true, the second Fontset will be selected.
+   *
+   * @param _queueSize
+   * Set with care! The queuesize can be changed to either save space or
+   * increase possible performance.
+   */
+  SerialLCD(         bool twoLines   = true,
+             bool sndFontSet = true,
+        unsigned char _queueSize = 32
+       );
 
-    ~SerialLCD();
+  ~SerialLCD();
 
-    /**
-     * @brief is true if data is ready to be transfered to lcd
-     * @details
-     * call isDataReady() in order to fetch the data by getData();
-     * @return true if data can be red by getData()
-     */
-    bool isDataReady();
+  /**
+   * @brief is true if data is ready to be transfered to lcd
+   * @details
+   * call isDataReady() in order to fetch the data by getData();
+   * @return true if data can be red by getData()
+   */
+  bool isDataReady();
 
-    /**
-     * @brief returns a single maped byte
-     * @details the result can be transfered to the lcd. Take
-     * care to call isDataReady() first, to see if getData can deliver.
-     * Notice that most data comes in pair.
-     * @return one byte ready to be transfered to lcd
-     */
-    unsigned char getData();
+  /**
+   * @brief returns a single maped byte
+   * @details the result can be transfered to the lcd. Take
+   * care to call isDataReady() first, to see if getData can deliver.
+   * Notice that most data comes in pair.
+   * @return one byte ready to be transfered to lcd
+   */
+  unsigned char getData();
 
-    /**
-     * @brief will move the cursor to it's home position
-     */
-    void moveCursorHome ();
+  /**
+   * @brief will move the cursor to it's home position
+   */
+  void moveCursorHome ();
 
-    /**
-     * @brief moves lcd Cursor to right
-     */
-    void moveCursorRight();
+  /**
+   * @brief moves lcd Cursor to right
+   */
+  void moveCursorRight();
 
-    /**
-     * @brief moves cursor to left
-     */
-    void moveCursorLeft ();
+  /**
+   * @brief moves cursor to left
+   */
+  void moveCursorLeft ();
 
-    /**
-     * @brief will move cursor to specific position on lcd
-     *
-     * @param bottomLine
-     * if true, the cursor will be in second line
-     *
-     * @param position
-     * vertical position of the cursor in DRAM. Value between 0 and 0x39.
-     */
-    void moveCursor(bool bottomLine, unsigned char position);
+  /**
+   * @brief will move cursor to specific position on lcd
+   *
+   * @param bottomLine
+   * if true, the cursor will be in second line
+   *
+   * @param position
+   * vertical position of the cursor in DRAM. Value between 0 and 0x39.
+   */
+  void moveCursor(bool bottomLine, unsigned char position);
 
-    /**
-     * @brief will clear the lcd and move cursor home
-     */
-    void clearDisplay   ();
+  /**
+   * @brief will clear the lcd and move cursor home
+   */
+  void clearDisplay   ();
 
-    /**
-     * @brief Changes lcd settings
-     * @details
-     * Can toggle the display, and change cursor Settings
-     *
-     * @param displayOn switches dispay off if parameter is false
-     * @param cursorOn make the cursor visible
-     * @param cursorBlinking make visible cursor blinking
-     */
-    void controlDisplay (
-                         bool displayOn,
-                         bool cursorOn,
-                         bool cursorBlinking
-                        );
+  /**
+   * @brief Changes lcd settings
+   * @details
+   * Can toggle the display, and change cursor Settings
+   *
+   * @param displayOn switches dispay off if parameter is false
+   * @param cursorOn make the cursor visible
+   * @param cursorBlinking make visible cursor blinking
+   */
+  void controlDisplay (
+             bool displayOn,
+             bool cursorOn,
+             bool cursorBlinking
+            );
 
-    /**
-     * @brief moves all content on display to the left.
-     * @details  Won't change the DDRAM
-     */
-    void shiftDisplayLeft();
+  /**
+   * @brief moves all content on display to the left.
+   * @details  Won't change the DDRAM
+   */
+  void shiftDisplayLeft();
 
-    /**
-     * @brief moves all content on display to the right.
-     * @details  Won't change the DDRAM
-     */
-    void shiftDisplayRight();
+  /**
+   * @brief moves all content on display to the right.
+   * @details  Won't change the DDRAM
+   */
+  void shiftDisplayRight();
 
-    /**
-     * @brief will write a single character
-     * @details
-     * Will write on lcd at the position of the cursor
-     *
-     * @param _c character to write on lcd
-     * Notice that 0x00 to 0x07 are Costum Characters,
-     * setup with addGraphic
-     *
-     * @return false if queue is full
-     */
-    bool writeCharacter(unsigned char _c);
+  /**
+   * @brief will write a single character
+   * @details
+   * Will write on lcd at the position of the cursor
+   *
+   * @param _c character to write on lcd
+   * Notice that 0x00 to 0x07 are Costum Characters,
+   * setup with addGraphic
+   *
+   * @return false if queue is full
+   */
+  bool writeCharacter(unsigned char _c);
 
-    /**
-     * @brief adds a costum Character
-     * @details use writeCharacter with the chosen address as
-     * parameter to add the graphic to the display
-     *
-     * @param address address where the graphic can be found later.
-     * Must be in range between 0x00 and 0x07.
-     *
-     * @param char an usigned char array of length of 10.
-     * The first three bits will be ignored by the lcd.
-     *
-     * @return false if id is greater 0x07
-     */
-    bool addGraphic (unsigned char address, unsigned char * graphic);
+  /**
+   * @brief adds a costum Character
+   * @details use writeCharacter with the chosen address as
+   * parameter to add the graphic to the display
+   *
+   * @param address address where the graphic can be found later.
+   * Must be in range between 0x00 and 0x07.
+   *
+   * @param char an usigned char array of length of 10.
+   * The first three bits will be ignored by the lcd.
+   *
+   * @return false if id is greater 0x07
+   */
+  bool addGraphic (unsigned char address, unsigned char * graphic);
 
 private:
-    unsigned char mapChar(
-                 unsigned char cmd,
-                 bool rs ,
-                 bool rw ,
-                 bool en ,
-                 bool msb
-                );
+  unsigned char mapChar(
+         unsigned char cmd,
+         bool rs ,
+         bool rw ,
+         bool en ,
+         bool msb
+        );
 
-    bool addCommand(
-                    unsigned char cmd,
-                    bool rs,
-                    bool rw
-                   );
+  bool addCommand(
+          unsigned char cmd,
+          bool rs,
+          bool rw
+           );
 
 
-    void setUpDisplay(bool _8bit, bool twoLines, bool sndFont);
+  void setUpDisplay(bool _8bit, bool twoLines, bool sndFont);
 
 };
 
