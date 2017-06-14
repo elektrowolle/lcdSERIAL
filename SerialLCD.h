@@ -171,9 +171,10 @@ public:
    * Set with care! The queuesize can be changed to either save space or
    * increase possible performance.
    */
-  SerialLCD(         bool twoLines   = true,
-             bool sndFontSet = true,
-        unsigned char _queueSize = 32
+  SerialLCD(        
+            bool twoLines   = true,
+            bool sndFontSet = true,
+            unsigned char _queueSize = 32
        );
 
   ~SerialLCD();
